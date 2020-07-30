@@ -19,12 +19,15 @@ class Timer extends React.Component {
 
     /**
      * what happens when counter reaches zero
+     *
+     * - tell/show user has lost
+     * - prompt to play again
      */
 
     boom = () => {
         clearInterval(this.interval);
         return (
-            <h1> You lost </h1>
+            <h1>X</h1>
         );
     };
 
@@ -46,6 +49,7 @@ class Timer extends React.Component {
     componentWillUnmount() {
         clearInterval(this.interval);
     }
+
 
     render() {
         return (

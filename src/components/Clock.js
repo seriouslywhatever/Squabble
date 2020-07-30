@@ -5,7 +5,7 @@ class Clock extends React.Component {
     render() {
         return (
             <div className="d-flex justify-content-center">
-                <div style={timerStyle}>
+                <div>
                     <h1>
                         {this.props.time}
                     </h1>
@@ -14,12 +14,5 @@ class Clock extends React.Component {
         );
     }
 }
-
-const timerStyle = {
-    // padding: 10,
-    // backgroundColor: 'aliceblue',
-    // border: '10px solid black',
-    // width: '15%'
-};
 
 export default Clock;
