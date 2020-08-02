@@ -4,17 +4,7 @@ import Clock from "./Clock";
 class Timer extends React.Component {
 
     state = {
-        time: 60,
-    };
-
-    /**
-     * to stop the timer preemptively
-     *
-     * make the method/condition that changes this.state.time stop leaving current time
-     * todo: delete this after play again has concluded
-     */
-    stopTimer = () => {
-        clearInterval(this.interval);
+        time: 120,
     };
 
     /**
@@ -22,7 +12,6 @@ class Timer extends React.Component {
      */
 
     boom = () => {
-        clearInterval(this.interval);
         return (
             <h1>X</h1>
         );
@@ -33,13 +22,17 @@ class Timer extends React.Component {
      */
 
     tick() {
-        if(this.state.time - 1 === 0){
-            this.props.boom();
+        if (this.props.inTime) {
+            if (this.state.time - 1 <= 0) {
+                this.setState({time: 120});
+                this.props.boom();
+            } else {
+                this.setState(state => ({
+                        time: state.time - 1
+                    })
+                );
+            }
         }
-        this.setState(state => ({
-                time: state.time - 1
-            })
-        );
     }
 
     componentDidMount() {
@@ -50,14 +43,12 @@ class Timer extends React.Component {
         clearInterval(this.interval);
     }
 
-
     render() {
         return (
             <div className="d-flex justify-content-center">
                 <div style={timerStyle}>
                     {
-                        this.state.time !== 0 ?
-                            <Clock time={this.state.time}/> : this.boom()
+                        this.props.inTime ? <Clock time={this.state.time}/> : this.boom()
                     }
                 </div>
             </div>

@@ -4,6 +4,7 @@ import Timer from "../Timer";
 import Board from "../Board";
 import Guess from "../Guess";
 import * as firebase from "firebase";
+import EndButtonGroup from "../EndButtonGroup";
 
 class Game extends React.Component {
 
@@ -13,24 +14,14 @@ class Game extends React.Component {
         totalQ: 360,
         guessedRight: [],
         question: "",
-        questionId: "1", //todo: change this to fetch random question
+        questionId: "1",
         ans: [],
-        // asked: [], //array of already asked questions for no dubs
         inTime: true
     };
 
     componentDidMount() {
         const db = firebase.database().ref();
-
-        //this.setState({}); push current this.state.questionId to array asked[] might move away from componentDidMount
         let random = Math.floor((Math.random() * this.state.totalQ) + 1);
-        // let isNew = true;
-        // this.state.asked.map(value => {
-        //     if (random === value){
-        //         isNew = false;
-        //     }
-        //     return value;
-        // });
         let stringRandom = String(random);
         this.setState({questionId: stringRandom});
         const dbRefQ = db.child("questions").child("0").child(`question_${stringRandom}`).child("question");
@@ -95,11 +86,18 @@ class Game extends React.Component {
         this.setState({inTime: false});
     };
 
+    restart = () => {
+        this.setState({
+            inTime: true
+        });
+        this.componentDidMount();
+    };
+
     render() {
         return (
             <React.Fragment>
                 <div className="container">
-                    <Timer boom={this.boom}/>
+                    <Timer inTime={this.state.inTime} boom={this.boom}/>
                     <div style={this.questionPromptStyle()}>
                         <h1>{this.state.question}</h1>
                     </div>
@@ -109,7 +107,7 @@ class Game extends React.Component {
                         <div className="flex-column d-flex flex-wrap" style={boardStyle}>
                             <Board inTime={this.state.inTime} ans={this.state.ans}/>
                         </div>
-                        <Guess guess={this.guess}/>
+                        {!this.state.inTime ? <EndButtonGroup reset={this.restart}/> :  <Guess guess={this.guess}/>}
                     </div>
                 </div>
             </React.Fragment>
