@@ -10,21 +10,31 @@ class Game extends React.Component {
 
     state = {
         total: 0,
+        totalQ: 360,
         guessedRight: [],
         question: "",
         questionId: "1", //todo: change this to fetch random question
         ans: [],
-        asked: [], //array of already asked questions for no dubs
-        inTime: true //todo create a switch for this
+        // asked: [], //array of already asked questions for no dubs
+        inTime: true
     };
 
     componentDidMount() {
-        //todo fetch first random question here ~
         const db = firebase.database().ref();
 
         //this.setState({}); push current this.state.questionId to array asked[] might move away from componentDidMount
-        const dbRefQ = db.child("questions").child("0").child(`question_${this.state.questionId}`).child("question");
-        const dbRefA = db.child("answers").child("0").child(`answer_${this.state.questionId}`);
+        let random = Math.floor((Math.random() * this.state.totalQ) + 1);
+        // let isNew = true;
+        // this.state.asked.map(value => {
+        //     if (random === value){
+        //         isNew = false;
+        //     }
+        //     return value;
+        // });
+        let stringRandom = String(random);
+        this.setState({questionId: stringRandom});
+        const dbRefQ = db.child("questions").child("0").child(`question_${stringRandom}`).child("question");
+        const dbRefA = db.child("answers").child("0").child(`answer_${stringRandom}`);
 
         dbRefA.on('value', snap => {
             this.setState({
@@ -41,7 +51,7 @@ class Game extends React.Component {
         });
     }
 
-    questionPrompt = () => {
+    questionPromptStyle = () => {
         return {
             backgroundColor: 'aliceblue',
             borderRadius: 10,
@@ -71,12 +81,13 @@ class Game extends React.Component {
                     const newItems = [...this.state.ans];
                     newItems[index].guessed = true;
                     this.setState({ans: newItems});
-
-                    if (this.state.guessedRight.length === this.state.total && this.state.inTime === true) {
+                    if (this.state.guessedRight.length === this.state.total - 1 && this.state.inTime === true) {
                         console.log("good job!")
+                        //todo: inform player has won, play again?
                     }
                 }
             }
+            return value;
         });
     };
 
@@ -88,8 +99,8 @@ class Game extends React.Component {
         return (
             <React.Fragment>
                 <div className="container">
-                    <Timer/>
-                    <div style={this.questionPrompt()}>
+                    <Timer boom={this.boom}/>
+                    <div style={this.questionPromptStyle()}>
                         <h1>{this.state.question}</h1>
                     </div>
                 </div>
