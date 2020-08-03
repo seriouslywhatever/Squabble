@@ -16,7 +16,8 @@ class Game extends React.Component {
         question: "",
         questionId: "1",
         ans: [],
-        inTime: true
+        inTime: true,
+        end: false
     };
 
     componentDidMount() {
@@ -44,7 +45,7 @@ class Game extends React.Component {
 
     questionPromptStyle = () => {
         return {
-            backgroundColor: 'aliceblue',
+            backgroundColor: this.state.end ? 'lightgreen' : 'aliceblue',
             borderRadius: 10,
             padding: 5,
             marginTop: 20
@@ -73,8 +74,9 @@ class Game extends React.Component {
                     newItems[index].guessed = true;
                     this.setState({ans: newItems});
                     if (this.state.guessedRight.length === this.state.total - 1 && this.state.inTime === true) {
-                        console.log("good job!")
-                        //todo: inform player has won, play again?
+                        this.setState({
+                            end: true,
+                        });
                     }
                 }
             }
@@ -102,7 +104,8 @@ class Game extends React.Component {
             return ans;
         });
         this.setState({
-            inTime: true
+            inTime: true,
+            end: false
         });
         this.componentDidMount();
     };
@@ -111,7 +114,7 @@ class Game extends React.Component {
         return (
             <React.Fragment>
                 <div className="container">
-                    <Timer inTime={this.state.inTime} boom={this.boom}/>
+                    <Timer end={this.state.end} inTime={this.state.inTime} boom={this.boom}/>
                     <div style={this.questionPromptStyle()}>
                         <h1>{this.state.question}</h1>
                     </div>
@@ -121,7 +124,8 @@ class Game extends React.Component {
                         <div className="flex-column d-flex flex-wrap" style={boardStyle}>
                             <Board inTime={this.state.inTime} ans={this.state.ans}/>
                         </div>
-                        {!this.state.inTime ? <EndButtonGroup reset={this.restart}/> : <Guess guess={this.guess}/>}
+                        {!this.state.inTime || this.state.end ? <EndButtonGroup reset={this.restart}/> :
+                            <Guess guess={this.guess}/>}
                     </div>
                 </div>
             </React.Fragment>

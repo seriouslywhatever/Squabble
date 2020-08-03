@@ -23,17 +23,31 @@ class Timer extends React.Component {
 
     tick() {
         if (this.props.inTime) {
-            if (this.state.time - 1 <= 0) {
+            if (!this.props.end) {
+                if (this.state.time - 1 <= 0) {
+                    this.setState({time: 120});
+                    this.props.boom();
+                } else {
+                    this.setState(state => ({
+                            time: state.time - 1
+                        })
+                    );
+                }
+            }else{
                 this.setState({time: 120});
                 this.props.boom();
-            } else {
-                this.setState(state => ({
-                        time: state.time - 1
-                    })
-                );
             }
         }
     }
+
+    timerStyle = () => {
+        return {
+            padding: 10,
+            backgroundColor: 'aliceblue',
+            border: '10px solid black',
+            width: '15%'
+        }
+    };
 
     componentDidMount() {
         this.interval = setInterval(() => this.tick(), 1000);
@@ -46,7 +60,7 @@ class Timer extends React.Component {
     render() {
         return (
             <div className="d-flex justify-content-center">
-                <div style={timerStyle}>
+                <div style={this.timerStyle()}>
                     {
                         this.props.inTime ? <Clock time={this.state.time}/> : this.boom()
                     }
@@ -55,12 +69,5 @@ class Timer extends React.Component {
         );
     }
 }
-
-const timerStyle = {
-    padding: 10,
-    backgroundColor: 'aliceblue',
-    border: '10px solid black',
-    width: '15%'
-};
 
 export default Timer;
