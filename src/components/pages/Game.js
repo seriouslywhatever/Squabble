@@ -8,7 +8,6 @@ import EndButtonGroup from "../EndButtonGroup";
 
 class Game extends React.Component {
 
-
     state = {
         total: 0,
         totalQ: 360,
@@ -17,7 +16,8 @@ class Game extends React.Component {
         questionId: "1",
         ans: [],
         inTime: true,
-        end: false
+        end: false,
+        isRight: true
     };
 
     componentDidMount() {
@@ -57,8 +57,10 @@ class Game extends React.Component {
     };
 
     guess = (guess) => {
+        let checker = false;
         this.state.ans.map((value, index, array) => {
             if (guess === value.answer) {
+                checker = true;
                 let noDup = true;
                 this.state.guessedRight.map((item) => {
                     if (item === guess) {
@@ -69,7 +71,6 @@ class Game extends React.Component {
 
                 if (noDup) {
                     this.setState({guessedRight: [...this.state.guessedRight, guess]});
-
                     const db = firebase.database().ref();
                     // eslint-disable-next-line no-unused-vars
                     const answerRef = db.child("answers").child("0").child(`answer_${this.state.questionId}`).child(`${index}`).update({guessed: true});
@@ -86,6 +87,11 @@ class Game extends React.Component {
             }
             return value;
         });
+        if (checker) {
+            this.setState({isRight: true});
+        } else {
+            this.setState({isRight: false});
+        }
     };
 
     boom = () => {
@@ -114,7 +120,8 @@ class Game extends React.Component {
         this.setState({
             inTime: true,
             end: false,
-            guessedRight: []
+            guessedRight: [],
+            isRight: true
         });
         this.componentDidMount();
     };
@@ -134,7 +141,7 @@ class Game extends React.Component {
                             <Board inTime={this.state.inTime} ans={this.state.ans}/>
                         </div>
                         {!this.state.inTime || this.state.end ? <EndButtonGroup reset={this.restart}/> :
-                            <Guess guess={this.guess}/>}
+                            <Guess guess={this.guess} isRight={this.state.isRight}/>}
                     </div>
                 </div>
             </React.Fragment>
@@ -142,12 +149,13 @@ class Game extends React.Component {
     }
 }
 
-const boardStyle = {
-    backgroundColor: 'black',
-    border: '10px solid #002080',
-    borderRadius: '20px 20px 0px 0px',
-    height: '450px',
-    paddingTop: "2%"
-};
+const
+    boardStyle = {
+        backgroundColor: 'black',
+        border: '10px solid #002080',
+        borderRadius: '20px 20px 0px 0px',
+        height: '450px',
+        paddingTop: "2%"
+    };
 
 export default Game;
