@@ -8,8 +8,8 @@ class Menu extends React.Component {
         return (
             <div className="Menu container">
                 <Link to={'/Solo'} className="RouterLink btn btn-light btn-lg btn-block"> Play </Link>
-                <Link to={"/Online"} className="RouterLink btn btn-light btn-lg btn-block"> Online </Link>
-                <Link to={"/Help"} className="RouterLink btn btn-light btn-lg btn-block"> Help </Link>
+                <Link to={"/Online"} className="RouterLink btn btn-light btn-lg btn-block disabled"> Online </Link>
+                <Link to={"/Help"} className="RouterLink btn btn-light btn-lg btn-block disabled"> Help </Link>
             </div>
         );
     }
