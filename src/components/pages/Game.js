@@ -87,6 +87,20 @@ class Game extends React.Component {
     };
 
     restart = () => {
+        const db = firebase.database().ref();
+        const dbRefA = db.child("answers").child("0").child(`answer_${this.state.questionId}`);
+        let holder = [];
+        dbRefA.on('value', snap => {
+            holder = snap.val();
+        });
+        holder.map((ans) => {
+            // eslint-disable-next-line no-unused-vars
+            const dbRefA = db.child("answers").child("0").child(`answer_${this.state.questionId}`).child(`${ans.id - 1}`).update({
+                    guessed: false
+                }
+            );
+            return ans;
+        });
         this.setState({
             inTime: true
         });
@@ -107,7 +121,7 @@ class Game extends React.Component {
                         <div className="flex-column d-flex flex-wrap" style={boardStyle}>
                             <Board inTime={this.state.inTime} ans={this.state.ans}/>
                         </div>
-                        {!this.state.inTime ? <EndButtonGroup reset={this.restart}/> :  <Guess guess={this.guess}/>}
+                        {!this.state.inTime ? <EndButtonGroup reset={this.restart}/> : <Guess guess={this.guess}/>}
                     </div>
                 </div>
             </React.Fragment>
