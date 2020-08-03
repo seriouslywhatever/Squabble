@@ -43,6 +43,10 @@ class Game extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        this.refillDb();
+    }
+
     questionPromptStyle = () => {
         return {
             backgroundColor: this.state.end ? 'lightgreen' : 'aliceblue',
@@ -88,7 +92,7 @@ class Game extends React.Component {
         this.setState({inTime: false});
     };
 
-    restart = () => {
+    refillDb = () => {
         const db = firebase.database().ref();
         const dbRefA = db.child("answers").child("0").child(`answer_${this.state.questionId}`);
         let holder = [];
@@ -103,9 +107,14 @@ class Game extends React.Component {
             );
             return ans;
         });
+    };
+
+    restart = () => {
+        this.refillDb();
         this.setState({
             inTime: true,
-            end: false
+            end: false,
+            guessedRight: []
         });
         this.componentDidMount();
     };
