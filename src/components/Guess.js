@@ -10,6 +10,12 @@ class Guess extends React.Component {
         this.setState({guess: e.target.value});
     };
 
+    answerStyle = () => {
+        return {
+            backgroundColor: this.props.isRight ? "#ffffff" : "#ff726f"
+        }
+    };
+
     onSubmit = (e) => {
         e.preventDefault();
         this.props.guess(this.state.guess);
@@ -21,6 +27,7 @@ class Guess extends React.Component {
             <div style={guessListStyle}>
                 <form className="d-flex flex-column" onSubmit={this.onSubmit}>
                     <input
+                        style={this.answerStyle()}
                         type="text"
                         name="guessed"
                         placeholder="take a guess..."
